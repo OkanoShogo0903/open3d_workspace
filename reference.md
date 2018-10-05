@@ -1,5 +1,3 @@
-[1;33mRead PCD failed: unable to open file: ../../TestData/ICP/cloud_bin_0.pcd
-[0;mPointCloud with 0 points.
 Help on package open3d:
 
 NAME

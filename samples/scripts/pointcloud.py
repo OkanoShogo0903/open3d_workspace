@@ -7,7 +7,7 @@ if __name__ == "__main__":
 
     print("Load a ply point cloud, print it, and render it")
     # pcb,plymxyzなどの拡張子で保存されているポイントクラウドデータをデコードする.
-    pcd = read_point_cloud("./TestData/fragment.ply")
+    pcd = read_point_cloud("../TestData/fragment.ply")
     print(pcd)
     print(np.asarray(pcd.points))
     # ポイントクラウドを可視化する.
@@ -28,7 +28,7 @@ if __name__ == "__main__":
 
     print("Load a polygon volume and use it to crop the original point cloud")
     # 領域を選択して切り取る
-    vol = read_selection_polygon_volume("./TestData/Crop/cropped.json")
+    vol = read_selection_polygon_volume("../TestData/Crop/cropped.json")
     chair = vol.crop_point_cloud(pcd)
     draw_geometries([chair])
     print("")

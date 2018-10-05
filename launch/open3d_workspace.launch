@@ -1,0 +1,11 @@
+<launch>
+  <node pkg="open3d_workspace" name="open3d_workspace" type="main.py" output="screen">
+  </node>
+  <!-- 
+    <include file="$(find aruco_ros)/launch/marker_publisher.launch"/>
+    <arg name="term_name" default="xterm"/>
+    <arg name="node_name" default="dd_launch_starter" />
+    <node pkg="o_display_disporsal_2018" type="start.sh" args="$(arg term_name)" name="$(arg node_name)" output="screen"/>
+  -->
+</launch>
+
