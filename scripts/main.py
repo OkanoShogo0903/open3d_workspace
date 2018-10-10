@@ -1,8 +1,19 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-
+#
+#@article{Zhou2018,
+#       author    = {Qian-Yi Zhou and Jaesik Park and Vladlen Koltun},
+#       title     = {{Open3D}: {A} Modern Library for {3D} Data Processing},
+#       journal   = {arXiv:1801.09847},
+#       year      = {2018},
+#}
+# 
+#@Supported compilers
+# GCC 4.8 and later on Linux
+#
 # [Import]------------------------------->
 import sys
+import time
 import copy
 import threading
 import types
@@ -16,7 +27,7 @@ from sensor_msgs.msg import PointCloud2, PointField
 import sensor_msgs.point_cloud2 as pc2
 #from std_msgs.msg import String
 # [ImportScripts]------------------------------->
-import util
+import util # realsense topic -> open3d data
 
 # sample -------------------------------------->>>
 
@@ -122,34 +133,68 @@ class PointCloud():
         # Parameter set ------>>>
         # Set rospy to execute a shutdown function when exiting --->>>
         # rospy.on_shutdown(self.shutdown)
+        self.voxel_size = 0.01
 
+        #self.lock = threading.Lock()
         self.lock = threading.Lock()
- 
+        self.num  = 0
+
+
 # [CallBack]---------------------------------->
     def callback(self, data):
-        if self.lock.acquire(False): # <--- ブロッキングしないようにする
+        self.num = self.num + 1
+        num = self.num
+        if self.lock.acquire(0): # <--- ノンブロッキングでmutex処理
             input_pcl = util.convert_pcl(data)
+            #input_pcl = read_point_cloud(self.package_path + "/etc/dataset001.ply")
+
+            #draw_geometries([input_pcl])
+
+            # 点群データを編集したい時使うやつ.
+            #draw_geometries_with_editing([input_pcl])
+            #draw_geometries_with_editing([read_point_cloud(self.package_path + "/etc/sandwich003.ply")])
+
+            # 点群データの保存
+            #print write_point_cloud(self.package_path + "/etc/dataset001.ply", input_pcl, write_ascii=False, compressed=False)
             print
-            #print input_pcl.points[2]
-            #np.asarray(input_pcl.points)
+            print num
+            print input_pcl
             #print np.asarray(input_pcl.points)[:][:]
+            #print(np.asarray(input_pcl.points))
 
-            #input_pcl = select_down_sample(input_pcl, )
+            # カメラから一定範囲以上の距離の点群を取り除く
+            VALID_DISTANCE = 1.15 # [m]
+            pcd_tree = KDTreeFlann(input_pcl)
+            [k, idx, _] = pcd_tree.search_radius_vector_3d([0,0,0], VALID_DISTANCE)
+            input_pcl = select_down_sample(input_pcl, idx)
+            print input_pcl
 
-            # カメラから1.5[m]以上の距離のものを弾く
-            #new_pcd = PointCloud()
-            #pcd_tree = KDTreeFlann(input_pcl)
-            #[k, idx, _] = pcd_tree.search_radius_vector_3d([0,0,0], 1.5)
+            #np.set_printoptions(threshold=100)
+
+            # 色で閾値外の値を取り除く.
+            rgb_bottom, rgb_top = [0, 0, 0], [1, 0.25, 1]
+            a = np.asarray(input_pcl.colors)
+            tf_array = np.any((a <= rgb_top) & (a >= rgb_bottom) == False, axis=1)
+
+            # get tuple **array** index.
+            over_idx, under_idx = np.where(tf_array == True), np.where(tf_array == False)
+            # change tuple to list.
+            over_idx, under_idx = list(over_idx[0]), list(under_idx[0])
+
+            #try:
+            input_pcl = select_down_sample(input_pcl, over_idx)
+            #execute TypeError:
+            #    pass
+
+            print input_pcl
+
             # 確認用にGreenに塗る
+            #np.asarray(new_pcd.colors)[idx[1:], :] = [0, 1, 0]
             #np.asarray(input_pcl.colors)[idx[1:], :] = [0, 1, 0]
             #np.asarray(input_pcl.points)[:, :] = [0, 1, 0]
             #np.asarray(input_pcl.points)[idx[1:], :] = [0, 1, 0]
-            
-            #draw_geometries([new_pcd])
-            print
 
-            #print(np.asarray(input_pcl.points))
-            print input_pcl
+            #draw_geometries([input_pcl])
 
             #colorIcp(
             self.calcPointCloud(
@@ -157,22 +202,22 @@ class PointCloud():
                     #target = read_point_cloud(self.package_path + "/etc/sandwich001.ply"),
                     target = read_point_cloud(self.package_path + "/etc/sandwich002.ply")
                     #target = read_point_cloud("../samples/TestData/ICP/cloud_bin_0.pcd"),
-                    #target = input_pcl
                     )
-
-            # 点群データを編集したい時使うやつ.
-            #draw_geometries_with_editing([input_pcl])
+            self.calcPointCloud(
+                    source = read_point_cloud(self.package_path + "/etc/sandwich002.ply"),
+                    #target = read_point_cloud(self.package_path + "/etc/sandwich001.ply"),
+                    target = input_pcl
+                    #target = read_point_cloud("../samples/TestData/ICP/cloud_bin_0.pcd"),
+                    )
 
             self.lock.release() # <--- 忘れずに解放する
 
 
 # []---------------------------------->
     def calcPointCloud(self, source, target):
-        # ポイントクラウドデータを読み込み、可視化する.
-        #source = read_point_cloud("../samples/TestData/ICP/cloud_bin_0.pcd")
-        #target = read_point_cloud("../samples/TestData/ICP/cloud_bin_1.pcd")
-        #target = input_pcl
-
+        # 処理前の時刻
+        pre_time = time.time() 
+ 
         trans_init = np.asarray([[1.0, 0.0, 0.0, 0.0],
                                 [0.0, 1.0, 0.0, 0.0],
                                 [0.0, 0.0, 1.0, 0.0],
@@ -181,12 +226,14 @@ class PointCloud():
         #draw_registration_result(source, target, np.identity(4))
 
         # グローバル位置合わせでは大幅にダウンサンプリングを行う.
-        source = uniform_down_sample(source, 10)
-        target = uniform_down_sample(target, 10)
-        source_down = voxel_down_sample(source, 0.01)
-        target_down = voxel_down_sample(target, 0.01)
+        #source = uniform_down_sample(source, 3)
+        #target = uniform_down_sample(target, 3)
+        source_down = voxel_down_sample(source, self.voxel_size)
+        target_down = voxel_down_sample(target, self.voxel_size)
 
         # 点法線推定を行う.
+        print("1. Estimate feature")
+        start = time.time()
         estimate_normals(source_down, KDTreeSearchParamHybrid(
                 radius = 0.1, max_nn = 30))
         estimate_normals(target_down, KDTreeSearchParamHybrid(
@@ -195,38 +242,60 @@ class PointCloud():
                 radius = 0.1, max_nn = 30))
         estimate_normals(target, KDTreeSearchParamHybrid(
                 radius = 0.1, max_nn = 30))
+        print("Estimate feature took %.3f [s]\n" % (time.time() - start))
 
         #print np.asarray(target_down.normals)[:10,:]
         #print np.asarray(source_down.normals)[:10,:]
 
         # 各点における、FPFH特徴量を計算する.
-        print("1. Compute FPFH feature with search radius 0.25")
+        print("2. Compute FPFH feature with search radius")
+        start = time.time()
         source_fpfh = compute_fpfh_feature(source_down,
                 KDTreeSearchParamHybrid(radius = 0.25, max_nn = 100))
         target_fpfh = compute_fpfh_feature(target_down,
                 KDTreeSearchParamHybrid(radius = 0.25, max_nn = 100))
+        print("calc FPFH feature took %.3f [s]\n" % (time.time() - start))
 
         # ターゲットのポイントクラウド内における対応点.
-        print("2. RANSAC registration on downsampled point clouds.")
+        print("3-a. RANSAC registration")
+        start = time.time()
+        distance_threshold_ransac = self.voxel_size * 1.5
         result_ransac = registration_ransac_based_on_feature_matching(
-                source_down, target_down, source_fpfh, target_fpfh, 0.075,
+                source_down, target_down, source_fpfh, target_fpfh, distance_threshold_ransac,
                 TransformationEstimationPointToPoint(False), 4,
                 [CorrespondenceCheckerBasedOnEdgeLength(0.9),
                 CorrespondenceCheckerBasedOnDistance(0.075)],
                 RANSACConvergenceCriteria(4000000, 500))
         print(result_ransac)
+        print("Global registration took %.3f [s]\n" % (time.time() - start))
+
+        print("3-b. FAST registration")
+        start = time.time()
+        distance_threshold_fast = self.voxel_size * 0.5
+        result_fast = registration_fast_based_on_feature_matching(
+                source_down, target_down, source_fpfh, target_fpfh,
+                FastGlobalRegistrationOption(
+                maximum_correspondence_distance = distance_threshold_fast))
+        print(result_fast)
+        print("Fast registration took %.3f [s]\n" % (time.time() - start))
+
         #draw_registration_result(source_down, target_down,
         #        result_ransac.transformation)
 
-        # グローバル位置合わせはパフォーマンスの問題で大幅にダウンサンプリング
-        # されたデータが用いられるため、精度はあまりタイトなものではない.
-        # そのため、ローカル位置合わせにPointToPlaneICPを用いる.
-        print("3. Point-to-plane ICP registration is applied on original point")
+        result_global = max(result_ransac, result_fast)
+
+        print("4. Point-to-plane ICP registration")
+        start = time.time()
         result_icp = registration_icp(source, target, 0.02,
                 result_ransac.transformation,
                 TransformationEstimationPointToPlane())
                 #TransformationEstimationPointToPoint())
         print(result_icp)
+        print("ICP registration took %.3f [s]\n" % (time.time() - start))
+
+        # 経過時間を表示
+        print("calc time : %.3f + [s]" % (time.time() - pre_time))
+
         draw_registration_result(source, target, result_icp.transformation)
 
 
