@@ -36,19 +36,23 @@ import util # realsense topic -> open3d data
 # sample -------------------------------------->>>
 
 def draw_registration_result_original_color(source, target, transformation):
-    source_temp = copy.deepcopy(source)
-    source_temp.transform(transformation)
-    draw_geometries([source_temp, target])
+    if DEBUG == True:
+        source_temp = copy.deepcopy(source)
+        source_temp.transform(transformation)
+        draw_geometries([source_temp, target])
+    return
 
 
 def draw_registration_result(source, target, transformation):
-    source_temp = copy.deepcopy(source)
-    target_temp = copy.deepcopy(target)
-    #source_temp.paint_uniform_color([1, 0.706, 0])
-    #target_temp.paint_uniform_color([1, 0, 0])
-    source_temp.transform(transformation)
-    #camera = 
-    draw_geometries([source_temp, target_temp])
+    if DEBUG == True:
+        source_temp = copy.deepcopy(source)
+        target_temp = copy.deepcopy(target)
+        #source_temp.paint_uniform_color([1, 0.706, 0])
+        #target_temp.paint_uniform_color([1, 0, 0])
+        source_temp.transform(transformation)
+        #camera = 
+        draw_geometries([source_temp, target_temp])
+    return
 
 
 # [ClassDefine]------------------------->
@@ -84,7 +88,8 @@ class PointCloud():
 # [CallBack]---------------------------------->
     def callback(self, data):
         '''
-            realsense公式のパッケージからtopicを受け取って流す.
+            realsenseのパッケージから点群のtopicを受け取って、
+            オブジェクトのカメラ位置をpublishする.
         '''
         # 現在時刻に近いデータなら実行.
         if rospy.Time.now().secs == data.header.stamp.secs:
@@ -109,89 +114,104 @@ class PointCloud():
             print 
             print input_pcl
 
+            print "pcdtree 0"
+            # nanを含むものがあれば終了.
+            #print np.any(np.isnan(np.asarray(input_pcl.points)))
+            #if np.any(np.isnan(np.asarray(input_pcl.points))) == True:
+            #    return 
             input_pcl = self.preprocess(input_pcl)
 
             # 確認用にGreenに塗る
-            #np.asarray(new_pcd.colors)[idx[1:], :] = [0, 1, 0]
             #np.asarray(input_pcl.colors)[idx[1:], :] = [0, 1, 0]
             #np.asarray(input_pcl.points)[:, :] = [0, 1, 0]
             #np.asarray(input_pcl.points)[idx[1:], :] = [0, 1, 0]
 
             #draw_geometries([input_pcl])
 
-            #self.colorIcp(
-            #result_a = self.calcPointCloud(
-            #        source = input_pcl,
-            #        target = model
-            #        )
-            result = self.calcPointCloud(
-                    source = model,
-                    target = input_pcl
-                    )
-            
-            # 複数の認識結果から一番良い結果を使う.
-            #eval_a = (result_a.fitness * result_a.inlier_rmse)
-            #eval_b = (result_b.fitness * result_b.inlier_rmse)
-
-            #if eval_a > eval_b:
-            #    print "a is better *************************************************"
-            #    result = result_a
-            #else:
-            #    print "b is better *************************************************"
-            #    result = result_b
-
-            # Publish.
-            if result.inlier_rmse == 0 or result.fitness == 0:
-                logging.debug('Detect fail.')
-            else:
-                logging.debug('Detect success.')
-                print result
-                # Publish model coordinate in robot system.
-                # 姿勢情報をカメラから見た現実座標に変換する.
-
-                if 1:
-                    '''
-                    # 自作手法その1 --->
-                    # 点群が密であるところは重みが高く設定されると同義なので、
-                    # vexelによって重み付けを消して、その点群重心から座標を求める.
-                    '''
-                    t_down  = voxel_down_sample(model, self.VOXEL_SIZE)
-                    x, y, z = self.returnMovedCenterGravityFromTransformation(t_down, result.transformation)
-                    x, y, z = self.returnObjectCenterFromSurfaceCenter(x, y, z)
-                    x, y, z = self.adjustOffset(x, y, z)
-                    print "x",x
-                    print "y",y
-                    print "z",z
-                    draw_registration_result(model, input_pcl, result.transformation)
-
-                if 1:
-                    '''
-                    # 自作手法その2 --->
-                    # オブジェクトの姿勢によってはmodelは完全にマッチングすることはないという前提.
-                    # ならば、modelの重心座標付近にあるinput点群の点を複数とって、
-                    # その重心がオブジェクトの表面重心だとする方法.
-                    # これを使う場合、modelは面の点群、ICPにはColorICPを用いることが望ましいはず.
-                    '''
-                    t_down         = voxel_down_sample(model, self.VOXEL_SIZE)
-                    x, y, z        = self.returnMovedCenterGravityFromTransformation(t_down, result.transformation)
-                    pcd_tree       = KDTreeFlann(input_pcl)
-                    [k, idx, _]    = pcd_tree.search_radius_vector_3d([x,y,z], self.TARGET_OBJECT_RADIUS * 1.5)
-                    sand_and_noise = select_down_sample(input_pcl, idx)
-                    x, y, z        = np.average( sand_and_noise.points, axis=0) # cameraのx,y,zを出す.
-                    x, y, z        = self.adjustOffset(x, y, z)
-                    print "x",x
-                    print "y",y
-                    print "z",z
-
-                    sand_and_noise.paint_uniform_color([1, 0, 0])
-                    draw_geometries([sand_and_noise, input_pcl])
+            if len( input_pcl.points ) > 0:
+                #self.colorIcp(
+                #result_a = self.calcPointCloud(
+                #        source = input_pcl,
+                #        target = model
+                #        )
+                result = self.calcPointCloud(
+                        source = model,
+                        target = input_pcl
+                        )
                 
-                msg = Point()
-                msg.x, msg.y, msg.z = x,y,z
-                print msg
-                self.object_point_sub.publish(msg)
+                # 複数の認識結果から一番良い結果を使う.
+                #eval_a = (result_a.fitness * result_a.inlier_rmse)
+                #eval_b = (result_b.fitness * result_b.inlier_rmse)
 
-                logging.debug('Publish point data')
+                #if eval_a > eval_b:
+                #    print "a is better *************************************************"
+                #    result = result_a
+                #else:
+                #    print "b is better *************************************************"
+                #    result = result_b
+
+                # Publish.
+                if result.inlier_rmse == 0 or result.fitness == 0:
+                    logging.debug('Detect fail.')
+                else:
+                    logging.debug('Detect success.')
+                    print result
+                    # Publish model coordinate in robot system.
+                    # 姿勢情報をカメラから見た現実座標に変換する.
+
+                    if 1:
+                        '''
+                        # 自作手法その1 --->
+                        # 点群が密であるところは重みが高く設定されると同義なので、
+                        # vexelによって重み付けを消して、その点群重心から座標を求める.
+                        '''
+                        t_down  = voxel_down_sample(model, self.VOXEL_SIZE)
+                        x, y, z = self.returnMovedCenterGravityFromTransformation(t_down, result.transformation)
+                        x, y, z = self.returnObjectCenterFromSurfaceCenter(x, y, z)
+                        x, y, z = self.adjustOffset(x, y, z)
+                        print "x",x
+                        print "y",y
+                        print "z",z
+                        if DEBUG == True:
+                            draw_registration_result(model, input_pcl, result.transformation)
+
+                    if 1:
+                        '''
+                        # 自作手法その2 --->
+                        # オブジェクトの姿勢によってはmodelは完全にマッチングすることはないという前提.
+                        # ならば、modelの重心座標付近にあるinput点群の点を複数とって、
+                        # その重心がオブジェクトの表面重心だとする方法.
+                        # これを使う場合、modelは面の点群、ICPにはColorICPを用いることが望ましいはず.
+                        '''
+                        try:
+                            t_down         = voxel_down_sample(model, self.VOXEL_SIZE)
+                            x, y, z        = self.returnMovedCenterGravityFromTransformation(t_down, result.transformation)
+                            print "x",x
+                            print "y",y
+                            print "z",z
+                            pcd_tree       = KDTreeFlann(input_pcl)
+                            [k, idx, _]    = pcd_tree.search_radius_vector_3d([x,y,z], self.TARGET_OBJECT_RADIUS * 1.5)
+                            sand_and_noise = select_down_sample(input_pcl, idx)
+                            x, y, z        = np.average( sand_and_noise.points, axis=0) # cameraのx,y,zを出す.
+                            x, y, z        = self.adjustOffset(x, y, z)
+                            print "x",x
+                            print "y",y
+                            print "z",z
+
+                            sand_and_noise.paint_uniform_color([1, 0, 0])
+                            if DEBUG == True:
+                                draw_geometries([sand_and_noise, input_pcl])
+                        except:
+                            # publishせずに返す
+                            return
+                    
+                    # Publish ----->>>
+                    msg = Point()
+                    msg.x, msg.y, msg.z = x,y,z
+                    print msg
+                    self.object_point_sub.publish(msg)
+
+                    logging.debug('Publish point data')
 
         return
 
@@ -246,24 +266,37 @@ class PointCloud():
 
 # [Open3d]---------------------------------->
     def preprocess(self, source):
+        # nanがあるインデックスを取り除く. --->
+        c = np.asarray(source.colors)
+        p = np.asarray(source.points)
+
+        tf_array = np.any(np.isnan(c), axis=1)
+        non_nan_idx = np.where(tf_array == False)
+        source = select_down_sample(source, list(non_nan_idx[0]))
+        tf_array = np.any(np.isnan(p), axis=1)
+        non_nan_idx = np.where(tf_array == False)
+        source = select_down_sample(source, list(non_nan_idx[0]))
+        print "nan remove", source
+
         # カメラから一定範囲以上の距離の点群を取り除く
         pcd_tree = KDTreeFlann(source)
+        print "pcdtree 1"
         [k, idx, _] = pcd_tree.search_radius_vector_3d([0,0,0], self.VALID_DISTANCE)
         source = select_down_sample(source, idx)
 
         # 色で閾値外の値を取り除く.
-        a = np.asarray(source.colors)
-        tf_array = np.any((a <= self.RGB_TOP) & (a >= self.RGB_BOTTOM) == False, axis=1)
+        c = np.asarray(source.colors)
+        tf_array = np.any((c <= self.RGB_TOP) & (c >= self.RGB_BOTTOM) == False, axis=1)
 
         # get tuple array index.
         over_idx, under_idx = np.where(tf_array == True), np.where(tf_array == False)
         # change tuple to list.
         over_idx, under_idx = list(over_idx[0]), list(under_idx[0])
 
-        #try:
-        source = select_down_sample(source, over_idx)
-        #execute TypeError:
-        #    pass
+        try:
+            source = select_down_sample(source, over_idx)
+        except:
+            pass
 
         print source
 
@@ -433,7 +466,11 @@ if __name__ == "__main__":
     rospy.init_node('open3d_workspace')
 
     # ログレベルを DEBUG に変更
-    logging.basicConfig(level=logging.DEBUG)
+    DEBUG = False
+    if DEBUG == True:
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.ERROR)
 
     point_cloud = PointCloud()
     

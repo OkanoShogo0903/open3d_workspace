@@ -8,44 +8,53 @@ if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
 endif
 set shortmess=aoO
 badd +1 term://.//3828:/bin/bash
-badd +1 term://.//3806:/bin/bash
-badd +1 term://.//3878:/bin/bash
+badd +1 term://.//3555:/bin/bash
+badd +1 term://.//3582:/bin/bash
 badd +17 term://.//3932:/bin/bash
 badd +1 README.md\[
-badd +14 README.md
+badd +20 README.md
 badd +1 term://.//4786:/bin/bash
-badd +134 scripts/main.py
+badd +121 scripts/main.py
 badd +11 term://.//23671:/bin/bash
 badd +16 scripts/interactive_visualization.py
 badd +4 term://.//5523:/bin/bash
 badd +153 ~/catkin_ws/src/realsense2_camera/launch/rs_rgbd.launch
 badd +35 ~/catkin_ws/src/realsense2_camera/cfg/origin_rs435_params.cfg
 badd +1 scripts/reconfigure.sh
-badd +436 reference.md
+badd +177 reference.md
 badd +1 hoge
 badd +11 scripts/print_help.py
-badd +31 term://.//13061:/bin/bash
+badd +1 term://.//4888:/bin/bash
 badd +34 samples/scripts/removal.py
 badd +77 term://.//15647:/bin/bash
-badd +0 scripts/util.py
-badd +0 samples/scripts/pointcloud.py
+badd +97 scripts/util.py
+badd +1 samples/scripts/pointcloud.py
 badd +13 samples/TestData/Crop/cropped.json
-badd +0 samples/TestData/Crop/fragment.ply
-badd +711 term://.//8013:/bin/bash
+badd +1 samples/TestData/Crop/fragment.ply
+badd +3978 term://.//4149:/bin/bash
 badd +50 samples/scripts/color_optimization.py
-badd +0 term://.//22644:/bin/bash
+badd +12 term://.//5094:/bin/bash
 badd +3 samples/scripts/trajectory_io.py
-badd +1032 term://.//27832:/bin/bash
+badd +353 term://.//4090:/bin/bash
 badd +28 term://.//3736:/bin/bash
 badd +32 ~/numpy_train.py
 badd +1 term://.//16700:/bin/bash
-badd +514 term://.//21051:/bin/bash
-badd +0 ~/catkin_ws/src/o_gpsr_2018/scripts/google_tts.py
-badd +0 ~/catkin_ws/src/o_display_disporsal_2018/scripts/main.py
-badd +0 term://.//4189:/bin/bash
+badd +11 term://.//4064:/bin/bash
+badd +67 ~/catkin_ws/src/o_gpsr_2018/scripts/google_tts.py
+badd +194 ~/catkin_ws/src/o_display_disporsal_2018/scripts/main.py
+badd +245 term://.//12929:/bin/bash
+badd +2 launch/open3d_workspace.launch
+badd +7 ~/catkin_ws/src/o_display_disporsal_2018/launch/master.launch
+badd +60 term://.//10122:/bin/bash
+badd +0 package.xml
+badd +8 term://.//18953:/bin/bash
+badd +19 term://.//26060:/bin/bash
+badd +0 term://.//26347:/bin/bash
+badd +1 ~/labpass.txt
+badd +13 ~/.ros/log/da6f88ac-cd23-11e8-952f-7c7a91806f92/open3d_workspace-2.log
 argglobal
 silent! argdel *
-edit scripts/util.py
+edit ~/.ros/log/da6f88ac-cd23-11e8-952f-7c7a91806f92/open3d_workspace-2.log
 set splitbelow splitright
 wincmd _ | wincmd |
 split
@@ -72,7 +81,7 @@ exe 'vert 3resize ' . ((&columns * 106 + 106) / 212)
 exe '4resize ' . ((&lines * 29 + 31) / 62)
 exe 'vert 4resize ' . ((&columns * 105 + 106) / 212)
 argglobal
-if bufexists('term://.//3806:/bin/bash') | buffer term://.//3806:/bin/bash | else | edit term://.//3806:/bin/bash | endif
+if bufexists('term://.//3555:/bin/bash') | buffer term://.//3555:/bin/bash | else | edit term://.//3555:/bin/bash | endif
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -81,14 +90,15 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-let s:l = 1328 - ((28 * winheight(0) + 14) / 29)
+let s:l = 27 - ((26 * winheight(0) + 14) / 29)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-1328
+27
 normal! 09|
 wincmd w
 argglobal
+if bufexists('term://.//26347:/bin/bash') | buffer term://.//26347:/bin/bash | else | edit term://.//26347:/bin/bash | endif
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -97,33 +107,31 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-silent! normal! zE
-let s:l = 61 - ((19 * winheight(0) + 14) / 29)
+let s:l = 399 - ((28 * winheight(0) + 14) / 29)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-61
-normal! 018|
-wincmd w
-argglobal
-if bufexists('term://.//3878:/bin/bash') | buffer term://.//3878:/bin/bash | else | edit term://.//3878:/bin/bash | endif
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-let s:l = 1 - ((0 * winheight(0) + 14) / 29)
-if s:l < 1 | let s:l = 1 | endif
-exe s:l
-normal! zt
-1
+399
 normal! 0
 wincmd w
 argglobal
-if bufexists('~/catkin_ws/src/o_gpsr_2018/scripts/google_tts.py') | buffer ~/catkin_ws/src/o_gpsr_2018/scripts/google_tts.py | else | edit ~/catkin_ws/src/o_gpsr_2018/scripts/google_tts.py | endif
+if bufexists('term://.//3582:/bin/bash') | buffer term://.//3582:/bin/bash | else | edit term://.//3582:/bin/bash | endif
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+let s:l = 1469 - ((28 * winheight(0) + 14) / 29)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+1469
+normal! 048|
+wincmd w
+argglobal
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -133,13 +141,14 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 91 - ((15 * winheight(0) + 14) / 29)
+let s:l = 12 - ((9 * winheight(0) + 14) / 29)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-91
-normal! 05|
+12
+normal! 0124|
 wincmd w
+4wincmd w
 exe '1resize ' . ((&lines * 29 + 31) / 62)
 exe 'vert 1resize ' . ((&columns * 106 + 106) / 212)
 exe '2resize ' . ((&lines * 29 + 31) / 62)
@@ -148,11 +157,8 @@ exe '3resize ' . ((&lines * 29 + 31) / 62)
 exe 'vert 3resize ' . ((&columns * 106 + 106) / 212)
 exe '4resize ' . ((&lines * 29 + 31) / 62)
 exe 'vert 4resize ' . ((&columns * 105 + 106) / 212)
-tabedit scripts/main.py
+tabedit README.md
 set splitbelow splitright
-wincmd _ | wincmd |
-split
-1wincmd k
 wincmd _ | wincmd |
 vsplit
 wincmd _ | wincmd |
@@ -160,93 +166,13 @@ vsplit
 2wincmd h
 wincmd w
 wincmd w
-wincmd w
-wincmd _ | wincmd |
-vsplit
-1wincmd h
-wincmd w
 set nosplitbelow
 set nosplitright
 wincmd t
 set winminheight=1 winminwidth=1 winheight=1 winwidth=1
-exe '1resize ' . ((&lines * 11 + 31) / 62)
 exe 'vert 1resize ' . ((&columns * 70 + 106) / 212)
-exe '2resize ' . ((&lines * 11 + 31) / 62)
 exe 'vert 2resize ' . ((&columns * 70 + 106) / 212)
-exe '3resize ' . ((&lines * 11 + 31) / 62)
 exe 'vert 3resize ' . ((&columns * 70 + 106) / 212)
-exe '4resize ' . ((&lines * 47 + 31) / 62)
-exe 'vert 4resize ' . ((&columns * 106 + 106) / 212)
-exe '5resize ' . ((&lines * 47 + 31) / 62)
-exe 'vert 5resize ' . ((&columns * 105 + 106) / 212)
-argglobal
-if bufexists('term://.//21051:/bin/bash') | buffer term://.//21051:/bin/bash | else | edit term://.//21051:/bin/bash | endif
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-let s:l = 546 - ((10 * winheight(0) + 5) / 11)
-if s:l < 1 | let s:l = 1 | endif
-exe s:l
-normal! zt
-546
-normal! 040|
-wincmd w
-argglobal
-if bufexists('term://.//27832:/bin/bash') | buffer term://.//27832:/bin/bash | else | edit term://.//27832:/bin/bash | endif
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-let s:l = 1036 - ((10 * winheight(0) + 5) / 11)
-if s:l < 1 | let s:l = 1 | endif
-exe s:l
-normal! zt
-1036
-normal! 040|
-wincmd w
-argglobal
-if bufexists('term://.//8013:/bin/bash') | buffer term://.//8013:/bin/bash | else | edit term://.//8013:/bin/bash | endif
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-let s:l = 2035 - ((10 * winheight(0) + 5) / 11)
-if s:l < 1 | let s:l = 1 | endif
-exe s:l
-normal! zt
-2035
-normal! 0
-wincmd w
-argglobal
-if bufexists('term://.//4189:/bin/bash') | buffer term://.//4189:/bin/bash | else | edit term://.//4189:/bin/bash | endif
-setlocal fdm=manual
-setlocal fde=0
-setlocal fmr={{{,}}}
-setlocal fdi=#
-setlocal fdl=0
-setlocal fml=1
-setlocal fdn=20
-setlocal fen
-let s:l = 70 - ((13 * winheight(0) + 23) / 47)
-if s:l < 1 | let s:l = 1 | endif
-exe s:l
-normal! zt
-70
-normal! 0
-wincmd w
 argglobal
 setlocal fdm=manual
 setlocal fde=0
@@ -257,38 +183,86 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 145 - ((29 * winheight(0) + 23) / 47)
+let s:l = 9 - ((8 * winheight(0) + 29) / 59)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-145
-normal! 016|
+9
+normal! 018|
 wincmd w
-5wincmd w
-exe '1resize ' . ((&lines * 11 + 31) / 62)
+argglobal
+if bufexists('scripts/main.py') | buffer scripts/main.py | else | edit scripts/main.py | endif
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let s:l = 114 - ((33 * winheight(0) + 29) / 59)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+114
+normal! 0
+wincmd w
+argglobal
+if bufexists('term://.//4149:/bin/bash') | buffer term://.//4149:/bin/bash | else | edit term://.//4149:/bin/bash | endif
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+let s:l = 3978 - ((57 * winheight(0) + 29) / 59)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+3978
+normal! 040|
+wincmd w
 exe 'vert 1resize ' . ((&columns * 70 + 106) / 212)
-exe '2resize ' . ((&lines * 11 + 31) / 62)
 exe 'vert 2resize ' . ((&columns * 70 + 106) / 212)
-exe '3resize ' . ((&lines * 11 + 31) / 62)
 exe 'vert 3resize ' . ((&columns * 70 + 106) / 212)
-exe '4resize ' . ((&lines * 47 + 31) / 62)
-exe 'vert 4resize ' . ((&columns * 106 + 106) / 212)
-exe '5resize ' . ((&lines * 47 + 31) / 62)
-exe 'vert 5resize ' . ((&columns * 105 + 106) / 212)
-tabedit reference.md
+tabedit launch/open3d_workspace.launch
 set splitbelow splitright
 wincmd _ | wincmd |
 vsplit
-1wincmd h
+wincmd _ | wincmd |
+vsplit
+wincmd _ | wincmd |
+vsplit
+3wincmd h
+wincmd w
+wincmd w
 wincmd w
 set nosplitbelow
 set nosplitright
 wincmd t
 set winminheight=1 winminwidth=1 winheight=1 winwidth=1
-exe 'vert 1resize ' . ((&columns * 125 + 106) / 212)
-exe 'vert 2resize ' . ((&columns * 86 + 106) / 212)
+exe 'vert 1resize ' . ((&columns * 31 + 106) / 212)
+exe 'vert 2resize ' . ((&columns * 59 + 106) / 212)
+exe 'vert 3resize ' . ((&columns * 60 + 106) / 212)
+exe 'vert 4resize ' . ((&columns * 59 + 106) / 212)
 argglobal
-if bufexists('term://.//13061:/bin/bash') | buffer term://.//13061:/bin/bash | else | edit term://.//13061:/bin/bash | endif
+enew
+file NERD_tree_2
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal nofen
+lcd ~/catkin_ws/src/open3d_workspace
+wincmd w
+argglobal
+if bufexists('term://.//10122:/bin/bash') | buffer term://.//10122:/bin/bash | else | edit term://.//10122:/bin/bash | endif
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -297,12 +271,12 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-let s:l = 49 - ((3 * winheight(0) + 29) / 59)
+let s:l = 157 - ((53 * winheight(0) + 29) / 59)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-49
-normal! 07|
+157
+normal! 0
 lcd ~/catkin_ws/src/open3d_workspace
 wincmd w
 argglobal
@@ -315,16 +289,37 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 190 - ((20 * winheight(0) + 29) / 59)
+let s:l = 2 - ((1 * winheight(0) + 29) / 59)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-190
-normal! 063|
+2
+normal! 073|
 lcd ~/catkin_ws/src/open3d_workspace
 wincmd w
-exe 'vert 1resize ' . ((&columns * 125 + 106) / 212)
-exe 'vert 2resize ' . ((&columns * 86 + 106) / 212)
+argglobal
+if bufexists('~/catkin_ws/src/o_display_disporsal_2018/launch/master.launch') | buffer ~/catkin_ws/src/o_display_disporsal_2018/launch/master.launch | else | edit ~/catkin_ws/src/o_display_disporsal_2018/launch/master.launch | endif
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let s:l = 7 - ((6 * winheight(0) + 29) / 59)
+if s:l < 1 | let s:l = 1 | endif
+exe s:l
+normal! zt
+7
+normal! 0
+lcd ~/catkin_ws/src/open3d_workspace
+wincmd w
+exe 'vert 1resize ' . ((&columns * 31 + 106) / 212)
+exe 'vert 2resize ' . ((&columns * 59 + 106) / 212)
+exe 'vert 3resize ' . ((&columns * 60 + 106) / 212)
+exe 'vert 4resize ' . ((&columns * 59 + 106) / 212)
 tabedit ~/catkin_ws/src/o_display_disporsal_2018/scripts/main.py
 set splitbelow splitright
 wincmd _ | wincmd |
@@ -354,16 +349,16 @@ setlocal fml=1
 setlocal fdn=20
 setlocal fen
 silent! normal! zE
-let s:l = 6 - ((5 * winheight(0) + 14) / 29)
+let s:l = 1 - ((0 * winheight(0) + 14) / 29)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-6
+1
 normal! 0
 lcd ~/catkin_ws/src/open3d_workspace
 wincmd w
 argglobal
-if bufexists('term://.//22644:/bin/bash') | buffer term://.//22644:/bin/bash | else | edit term://.//22644:/bin/bash | endif
+if bufexists('term://.//5094:/bin/bash') | buffer term://.//5094:/bin/bash | else | edit term://.//5094:/bin/bash | endif
 setlocal fdm=manual
 setlocal fde=0
 setlocal fmr={{{,}}}
@@ -372,12 +367,12 @@ setlocal fdl=0
 setlocal fml=1
 setlocal fdn=20
 setlocal fen
-let s:l = 91 - ((27 * winheight(0) + 14) / 29)
+let s:l = 712 - ((27 * winheight(0) + 14) / 29)
 if s:l < 1 | let s:l = 1 | endif
 exe s:l
 normal! zt
-91
-normal! 0
+712
+normal! 011|
 lcd ~/catkin_ws/src/open3d_workspace
 wincmd w
 argglobal
@@ -404,7 +399,7 @@ exe 'vert 1resize ' . ((&columns * 105 + 106) / 212)
 exe '2resize ' . ((&lines * 29 + 31) / 62)
 exe 'vert 2resize ' . ((&columns * 105 + 106) / 212)
 exe 'vert 3resize ' . ((&columns * 106 + 106) / 212)
-tabnext 2
+tabnext 1
 if exists('s:wipebuf') && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
   silent exe 'bwipe ' . s:wipebuf
 endif
