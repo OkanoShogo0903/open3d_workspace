@@ -1,5 +1,5 @@
 <launch>
-  <node pkg="open3d_workspace" name="open3d_workspace" type="main.py" output="screen">
+    <node pkg="open3d_workspace" name="open3d_workspace" type="main.py" output="screen">
   </node>
   <!-- 
     <include file="$(find aruco_ros)/launch/marker_publisher.launch"/>

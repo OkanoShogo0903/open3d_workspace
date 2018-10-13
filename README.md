@@ -12,3 +12,9 @@ roslaunch realsense2_camera rs_rgbd.launch
 Floating point exception (core dumped)
 ```
 
+- realsenseの設定ファイル
+realsenseのlaunch起動中に以下のコードでGUIから操作できる.
+変更はリアルタイムで反映される.
+```
+rosrun rqt_reconfigure rqt_reconfigure
+```
